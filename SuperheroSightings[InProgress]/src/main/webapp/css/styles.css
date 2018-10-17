@@ -1,0 +1,240 @@
+/* 
+    Author     : Chad
+*/
+
+hr {
+    border: 0;
+    clear:both;
+    display:block;
+    width: 96%;               
+    background-color:#808080;
+    height: 1px;
+}
+
+h1 {
+    margin: 1em 0 0.5em 0;
+    font-weight: 100;
+    text-transform: uppercase;
+    color: #FFFFFF;
+    font-style: italic;
+    font-family: 'Josefin Sans', sans-serif;
+    font-size: 36px;
+    line-height: 42px;
+    text-shadow: 2px 5px 0 rgba(0,0,0,0.2);
+}
+
+h2 { color: #F0F8FF; 
+     font-family: 'Lucida Bright'; 
+     font-size: 30px; 
+     font-weight: normal; 
+     line-height: 48px; 
+     margin: 0 0 25px; 
+     text-shadow: 1px 1px 2px #082b34; 
+}
+
+p {
+    color: #FFFFFF; 
+}
+
+body {
+    font-size: 12px;
+    font-family: sans-serif;
+    background: #2c3e50;
+}
+
+.footer{
+    font-size:8px;
+    color:#F0F8FF;
+    clear:both;
+    display:block;
+    letter-spacing:5px;
+    border:1px solid #fff;
+    padding:5px;
+    text-decoration:none;
+    width:210px;
+    margin:auto;
+    margin-top:400px;
+}
+
+#tableTitle {
+    color: #F0F8FF; 
+}
+
+a {
+  color: #1abc9c;
+  font-family: helvetica;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+/** Custom Nav **/
+nav {
+    margin: 27px auto 0;
+    position: relative;
+    width: 590px;
+    height: 50px;
+    background-color: #34495e;
+    border-radius: 8px;
+    font-size: 0;
+}
+nav a {
+    line-height: 50px;
+    height: 100%;
+    font-size: 15px;
+    display: inline-block;
+    position: relative;
+    z-index: 1;
+    text-decoration: none;
+    text-transform: uppercase;
+    text-align: center;
+    color: white;
+    cursor: pointer;
+}
+nav .animation {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    z-index: 0;
+    transition: all .5s ease 0s;
+    border-radius: 8px;
+}
+a:nth-child(1) {
+    width: 100px;
+}
+a:nth-child(2) {
+    width: 110px;
+}
+a:nth-child(3) {
+    width: 100px;
+}
+a:nth-child(4) {
+    width: 160px;
+}
+a:nth-child(5) {
+    width: 120px;
+}
+nav .start-home, a:nth-child(1):hover~.animation {
+    width: 100px;
+    left: 0;
+    background-color: #1abc9c;
+}
+nav .start-hero, a:nth-child(2):hover~.animation {
+    width: 110px;
+    left: 100px;
+    background-color: #e74c3c;
+}
+nav .start-location, a:nth-child(3):hover~.animation {
+    width: 100px;
+    left: 210px;
+    background-color: #3498db;
+}
+nav .start-org, a:nth-child(4):hover~.animation {
+    width: 160px;
+    left: 310px;
+    background-color: #9b59b6;
+}
+nav .start-sighting, a:nth-child(5):hover~.animation {
+    width: 120px;
+    left: 470px;
+    background-color: #e67e22;
+}
+/** End Custom Nav **/
+
+/** Custom Select **/
+select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    -ms-appearance: none;
+    appearance: none;
+    outline: 0;
+    box-shadow: none;
+    border: 0;
+    border-color: #1abc9c;
+    background: #34495e;
+    background-image: none;
+}
+
+.select {
+    position: relative;
+    display: block;
+    width: 20em;
+    height: 3em;
+    line-height: 3;
+    background: #FFFFFF;
+    overflow: hidden;
+    border-radius: .25em;
+}
+select {
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0 0 0 .5em;
+    color: #FFFFFF;
+    cursor: pointer;
+    border: 1;
+    border-color: #1abc9c;
+}
+select::-ms-expand {
+    display: none;
+}
+/* Arrow */
+.select::after {
+    content: '\25BC';
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    padding: 0 1em;
+    background: #34495e;
+    pointer-events: none;
+    color: #1abc9c;
+}
+/* Transition */
+.select:hover::after {
+    color: #FFFFFF;
+}
+.select::after {
+    -webkit-transition: .25s all ease;
+    -o-transition: .25s all ease;
+    transition: .25s all ease;
+}
+/** End Custom Select **/
+
+/** Custom Home Page Display **/
+#lastTen{
+    overflow-x: scroll;
+    width: auto;
+    white-space: nowrap;
+    color: #FFFFFF; 
+}
+.item{
+    display: inline-block;
+    border: 1px solid white;
+    width: 150px;
+    height: 75px;
+    background: #34495e;
+    text-align: center;
+}
+/** End Custom Home Page Display **/
+
+/** Custom Table **/
+.table{
+    width:100%; 
+    border-collapse:collapse; 
+}
+.table td{ 
+    padding:7px; 
+    border:#FFFFFF 1px solid;
+}
+
+.table tr{
+    background: #34495e;
+}
+
+.table tr:hover {
+    background-color: #1a8bbc;
+}
+/** End Custom Table **/
