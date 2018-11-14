@@ -5,6 +5,7 @@
  */
 package com.sg.superherosightings.dto;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 import org.hibernate.validator.constraints.Length;
@@ -26,7 +27,7 @@ public class Heroes {
     @NotEmpty(message = "You must supply a value for the the Hero Power.")
     @Length(max = 50, message = "Hero Power must be no more than 50 characters in length.")
     private String heroPower;
-    private Organization org;
+    private List<Organization> org;
     private List<Location> locations;
 
     public List<Location> getLocations() {
@@ -37,12 +38,16 @@ public class Heroes {
         this.locations = locations;
     }
     
-    public Organization getOrg() {
+    public List<Organization> getOrg() {
         return org;
     }
 
-    public void setOrg(Organization org) {
+    public void setOrg(List<Organization> org) {
         this.org = org;
+    }
+    
+    public void addOrg(Organization orgs) {
+        org.add(orgs);
     }
     
     public long getHeroId() {

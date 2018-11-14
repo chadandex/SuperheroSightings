@@ -21,11 +21,11 @@ import org.springframework.stereotype.Service;
  */
 @Service
 public class SuperheroServiceImpl implements SuperheroServiceLayer {
-    
+
     @Autowired(required = false)
     SuperheroDao dao;
-    
-    public SuperheroServiceImpl(SuperheroDao dao){
+
+    public SuperheroServiceImpl(SuperheroDao dao) {
         this.dao = dao;
     }
 
@@ -37,6 +37,11 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     @Override
     public void removeHero(long heroId) {
         dao.removeHero(heroId);
+    }
+
+    @Override
+    public void updateHeroWithOrg(Heroes hero, long orgId) {
+        dao.updateHeroWithOrg(hero, orgId);
     }
 
     @Override
@@ -63,7 +68,7 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     public Heroes getHeroById(long heroId) {
         return dao.getHeroById(heroId);
     }
-    
+
     @Override
     public List<Organization> getOrgByHeroId(long heroId) {
         return dao.getOrgByHeroId(heroId);
@@ -80,6 +85,11 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     }
 
     @Override
+    public void updateOrgWithHero(Organization org, long heroId) {
+        dao.updateOrgWithHero(org, heroId);
+    }
+
+    @Override
     public void updateOrg(Organization organization) {
         dao.updateOrg(organization);
     }
@@ -93,7 +103,7 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     public Organization getOrgById(long orgId) {
         return dao.getOrgById(orgId);
     }
-    
+
     @Override
     public List<Heroes> getHeroByOrgId(long orgId) {
         return dao.getHeroByOrgId(orgId);
@@ -133,14 +143,14 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     public Sighting getSightingByID(long sightingId) {
         return dao.getSightingByID(sightingId);
     }
-    
+
     @Override
-    public Location getLocationBySightingId(long sightingID){
+    public Location getLocationBySightingId(long sightingID) {
         return dao.getLocationBySightingId(sightingID);
     }
-    
+
     @Override
-    public Heroes getHeroBySightingId(long sightingID){
+    public Heroes getHeroBySightingId(long sightingID) {
         return dao.getHeroBySightingId(sightingID);
     }
 
@@ -165,6 +175,16 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     }
 
     @Override
+    public void updateSightingWithHero(Sighting sighting, long heroId) {
+        dao.updateSightingWithHero(sighting, heroId);
+    }
+
+    @Override
+    public void updateSightingWithLocation(Sighting sighting, long locationId) {
+        dao.updateSightingWithLocation(sighting, locationId);
+    }
+
+    @Override
     public List<Sighting> getSightingsByLocationID(int locationId) {
         return dao.getSightingsByLocationID(locationId);
     }
@@ -180,10 +200,10 @@ public class SuperheroServiceImpl implements SuperheroServiceLayer {
     }
 
     @Override
-    public void removeHeroOrg(long orgId, long heroId) {
-        dao.removeHeroOrg(orgId, heroId);
+    public void removeHeroOrg(long heroId, long orgId) {
+        dao.removeHeroOrg(heroId, orgId);
     }
-    
+
     @Override
     public void deleteHeroOrgsByHeroID(long heroID) {
         dao.deleteHeroOrgsByHeroID(heroID);

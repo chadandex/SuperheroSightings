@@ -13,7 +13,7 @@
         <title>Edit Sighting</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">    
-        <link href="${pageContext.request.contextPath}/css/styles.css?v=1" type="text/css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/styles.css?v=6" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div class="container" style="color:white;">
@@ -28,9 +28,6 @@
                     <div class="col-md-8">
                         <p>
                             <c:out value="${location.locationName}"/> 
-                            <a href="deleteHeroOrgAssoc?heroId=${heroId}/?orgId=${currentOrg.orgId}">
-                                Delete
-                            </a>
                         </p>
                         <div class="col-md-8" >
                             <div class="select">
@@ -57,9 +54,6 @@
                     <div class="col-md-8">
                         <p>
                             <c:out value="${hero.heroName}"/> 
-                            <a href="deleteHeroOrgAssoc?heroId=${heroId}/?orgId=${currentOrg.orgId}">
-                                Delete
-                            </a>
                         </p>
                         <div class="col-md-8">
                             <div class="select">
@@ -95,7 +89,9 @@
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-8">
                         <input type="submit" class="btn btn-default" value="Update Sighting"/>
-                        <input type="button" class="btn btn-default" name="cancel" onclick="history.back()" value="Cancel"/>
+                        <a href="${pageContext.request.contextPath}/displaySightingPage">
+                            <input type="button" class="btn btn-default" value="Cancel"/>
+                        </a>
                     </div>
                 </div>
             </sf:form>

@@ -24,7 +24,10 @@ public interface SuperheroServiceLayer {
     // remove the Hero with the given id from the data store
     public void removeHero(long heroId);
 
-    // update the given Hero in the data store
+    // update the given Hero in the data store with an org attached
+    public void updateHeroWithOrg(Heroes hero, long orgId);
+    
+    // update the given Hero in the data store without an org attached
     public void updateHero(Heroes hero);
     
     // retrieve all Hero from location
@@ -49,6 +52,9 @@ public interface SuperheroServiceLayer {
     // remove the Organization with the given id from the data store
     public void removeOrg(long orgId);
 
+    // update the given Organization in the data store with a hero attached
+    public void updateOrgWithHero(Organization org, long heroId);
+    
     // update the given Organization in the data store
     public void updateOrg(Organization organization);
 
@@ -102,6 +108,12 @@ public interface SuperheroServiceLayer {
     // update the given Sighthing in the data store
     public void updateSighting(Sighting sighting);
     
+    // update the given Sighting with new hero selected
+    public void updateSightingWithHero(Sighting sighting, long heroId);
+    
+    // update the given Sighting with new location selected
+    public void updateSightingWithLocation(Sighting sighting, long locationId);
+    
     // retrieve all Sighthings with given Location id
     public List<Sighting> getSightingsByLocationID(int locationID);
     
@@ -110,11 +122,11 @@ public interface SuperheroServiceLayer {
     
     // HEROORG
     // add given hero to org
-    public void addHeroOrg(long orgID, long heroID);
+    public void addHeroOrg(long orgId, long heroId);
     
     // remove given hero from org
-    public void removeHeroOrg(long orgID, long heroID);
+    public void removeHeroOrg(long heroId, long orgId);
     
     // remove given heroId from heroOrg bridge
-    public void deleteHeroOrgsByHeroID(long heroID);
+    public void deleteHeroOrgsByHeroID(long heroId);
 }

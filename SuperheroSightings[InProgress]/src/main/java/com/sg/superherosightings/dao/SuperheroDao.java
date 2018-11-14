@@ -24,7 +24,10 @@ public interface SuperheroDao {
     // remove the Hero with the given id from the data store
     public void removeHero(long heroId);
 
-    // update the given Hero in the data store
+    // update the given Hero in the data store with an org attached
+    public void updateHeroWithOrg(Heroes hero, long orgId);
+    
+    // update the given Hero in the data store without an org attached
     public void updateHero(Heroes hero);
     
     // retrieve all Hero from location
@@ -49,6 +52,9 @@ public interface SuperheroDao {
     // remove the Organization with the given id from the data store
     public void removeOrg(long orgId);
 
+    // update the given Organization in the data store with a hero attached
+    public void updateOrgWithHero(Organization org, long heroId);
+    
     // update the given Organization in the data store
     public void updateOrg(Organization organization);
 
@@ -101,6 +107,12 @@ public interface SuperheroDao {
     
     // update the given Sighthing in the data store
     public void updateSighting(Sighting sighting);
+    
+    // update the given Sighting with new hero selected
+    public void updateSightingWithHero(Sighting sighting, long heroId);
+    
+    // update the given Sighting with new location selected
+    public void updateSightingWithLocation(Sighting sighting, long locationId);
     
     // retrieve all Sighthings with given Location id
     public List<Sighting> getSightingsByLocationID(int locationID);

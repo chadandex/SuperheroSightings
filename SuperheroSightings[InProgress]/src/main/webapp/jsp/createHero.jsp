@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +13,7 @@
         <title>Superhero</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">    
-        <link href="${pageContext.request.contextPath}/css/styles.css?v=5" type="text/css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/styles.css?v=6" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -28,7 +29,14 @@
                 <a href="${pageContext.request.contextPath}/displaySightingPage">Sightings</a>
                 <div class="animation start-hero"></div>
             </nav>
-
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <p>Hello : ${pageContext.request.userPrincipal.name}
+                    | <a href="<c:url value="/j_spring_security_logout" />" > Logout</a>
+                </p>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <a href="${pageContext.request.contextPath}/displayUserList">User Admin Tools</a>
+                </sec:authorize>
+            </c:if>
             <!-- 
                 Add a row to container - this will hold the summary table and the new
                 hero form.
@@ -53,14 +61,18 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="displayEditHeroForm?heroId=${currentHero.heroId}">
-                                        Edit
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_MOD')">
+                                        <a href="displayEditHeroForm?heroId=${currentHero.heroId}">
+                                            Edit
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                                 <td>
-                                    <a href="deleteHero?heroId=${currentHero.heroId}">
-                                        Delete
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                        <a href="deleteHero?heroId=${currentHero.heroId}">
+                                            Delete
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -71,51 +83,51 @@
                 half of the row
                 -->
                 <div class="col-md-6">
-                    <h2>Add New Superhero</h2>
-                    <form class="form-horizontal" 
-                          role="form" method="POST" 
-                          action="createHero">
-                        <div class="form-group">
-                            <label for="add-name" class="col-md-4 control-label" style="color:white;">Name:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="heroName" placeholder="Name" required/>
+                    <sec:authorize access="hasRole('ROLE_MOD')">
+                        <h2>Add New Superhero</h2>
+                        <form class="form-horizontal" 
+                              role="form" method="POST" 
+                              action="createHero">
+                            <div class="form-group">
+                                <label for="add-name" class="col-md-4 control-label" style="color:white;">Name:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="heroName" placeholder="Name" required/>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-description" class="col-md-4 control-label" style="color:white;">Description:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="heroDescr" placeholder="Description" required/>
+                            <div class="form-group">
+                                <label for="add-description" class="col-md-4 control-label" style="color:white;">Description:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="heroDescr" placeholder="Description" required/>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
-                            <label for="add-power" class="col-md-4 control-label" style="color:white;">Power:</label>
-                            <div class="col-md-8">
-                                <input type="text" class="form-control" name="heroPower" placeholder="Power" required/>
+                            <div class="form-group">
+                                <label for="add-power" class="col-md-4 control-label" style="color:white;">Power:</label>
+                                <div class="col-md-8">
+                                    <input type="text" class="form-control" name="heroPower" placeholder="Power" required/>
+                                </div>
                             </div>
-                        </div>
-                        <div class="form-group">
+                            <div class="form-group">
                                 <label for="add-org" class="col-md-4 control-label" style="color:white;">Organization:</label>
                                 <div class="col-md-8">
                                     <div class="select">
-                                    <!-- Heroes Organization drop down flooding -->
-                                    <select name="heroesOrgSelect">
-                                        <option value="" selected disabled hidden>Choose here</option>
-                                        <c:forEach var="currentOrg" items="${orgList}">
-                                            <option value="<c:out value="${currentOrg.orgId}"/>">
-                                                <c:out value="${currentOrg.orgName}"/>
-                                            </option>
-                                        </c:forEach>
-                                    </select>
+                                        <!-- Heroes Organization drop down flooding -->
+                                        <select name="heroesOrgSelect">
+                                            <option value="" selected disabled hidden>Choose here</option>
+                                            <c:forEach var="currentOrg" items="${orgList}">
+                                                <option value="<c:out value="${currentOrg.orgId}"/>">
+                                                    <c:out value="${currentOrg.orgName}"/>
+                                                </option>
+                                            </c:forEach>
+                                        </select>
                                     </div>
                                 </div>
                             </div>
-                        <div class="form-group">
-                            <div class="col-md-offset-4 col-md-8">
-                                <input type="submit" class="btn btn-default" value="Create Superhero"/>
+                            <div class="form-group">
+                                <div class="col-md-offset-4 col-md-8">
+                                    <input type="submit" class="btn btn-default" value="Create Superhero"/>
+                                </div>
                             </div>
-                        </div>
-                    </form>
-
+                    </sec:authorize>
                 </div> <!-- End col div -->
 
             </div> <!-- End row div -->     

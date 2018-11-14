@@ -21,35 +21,9 @@
                 <h1>Edit Superhero</h1>
             </div>
             <hr />
-            <sf:form class="form-horizontal" role="form"
-                     action="editHero" method="POST">
-                <div class="form-group">
-                    <label for="add-org" class="col-md-4 control-label">Superhero Organization(s):</label>                          
-                    <div class="col-md-8">
-                        <ul>
-                            <c:forEach var="currentOrg" items="${org}">
-                                <li><c:out value="${currentOrg.orgName}"/> 
-                                    <a href="deleteHeroOrgAssoc?heroId=${heroId}/?orgId=${currentOrg.orgId}">
-                                        Delete
-                                    </a></li>
-                                </c:forEach>
-                        </ul>
-                        <div class="col-md-8">
-                            <div class="select">
-                                <!-- Heroes Organization drop down flooding -->
-                                <select name="heroesOrgSelect">
-                                    <option value="" selected disabled hidden>Choose here</option>
-                                    <c:forEach var="currentOrg" items="${orgList}">
-                                        <option value="<c:out value="${currentOrg.orgId}"/>">
-                                            <c:out value="${currentOrg.orgName}"/>
-                                        </option>
-                                    </c:forEach>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </sf:form>
+            <div align="center">
+                <small><p>! <i>Please note: Deleting an Organization will permanently delete without need of clicking update</i> !</p></small>
+            </div>
             <sf:form class="form-horizontal" role="form" modelAttribute="hero"
                      action="editHero" method="POST">
                 <div class="form-group">
@@ -76,12 +50,40 @@
                         <sf:errors path="heroPower" cssclass="error"></sf:errors>
                         <sf:hidden path="heroId"/>
                     </div>
-
+                </div>
+                <div class="form-group">
+                    <label for="add-org" class="col-md-4 control-label">Superhero Organization(s):</label>                          
+                    <div class="col-md-8">
+                        <ul>
+                            <c:forEach var="currentOrg" items="${org}">
+                                <li><c:out value="${currentOrg.orgName}"/> <b>|</b>
+                                    <a href="deleteHeroOrgAssoc?orgId=${currentOrg.orgId}&heroId=${hero.heroId}">
+                                        Delete
+                                    </a>
+                                </li>
+                            </c:forEach>
+                        </ul>
+                        <div class="col-md-8">
+                            <div class="select">
+                                <!-- Heroes Organization drop down flooding -->
+                                <select name="heroesOrgSelectEdit">
+                                    <option value="null" selected disabled hidden>Choose here</option>
+                                    <c:forEach var="currentOrg" items="${orgList}">
+                                        <option value="<c:out value="${currentOrg.orgId}"/>">
+                                            <c:out value="${currentOrg.orgName}"/>
+                                        </option>
+                                    </c:forEach>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="form-group">
                     <div class="col-md-offset-4 col-md-8">
                         <input type="submit" class="btn btn-default" value="Update Superhero"/>
-                        <input type="button" class="btn btn-default" name="cancel" onclick="history.back()" value="Cancel"/>
+                        <a href="${pageContext.request.contextPath}/displayHeroesPage">
+                            <input type="button" class="btn btn-default" value="Cancel"/>
+                        </a>
                     </div>
                 </div>
             </sf:form>

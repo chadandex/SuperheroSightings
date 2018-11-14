@@ -43,8 +43,8 @@
         <property name="jdbcTemplate" ref="jdbcTemplate" />
     </bean>
     
-    <!--<bean id="superheroService"
-              class="com.sg.superherosightings.service.SuperheroServiceImpl">
-        <property name="SuperheroDao" ref="superheroDao"/>
-    </bean>-->
+    <bean id="userDao"
+          class="com.sg.superherosightings.dao.UserDaoDbImpl">
+        <property name="jdbcTemplate" ref="jdbcTemplate" />
+    </bean>
 </beans>

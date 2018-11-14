@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +13,7 @@
         <title>Sightings</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet"> 
-        <link href="${pageContext.request.contextPath}/css/styles.css?v=5" type="text/css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/styles.css?v=6" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -29,6 +30,14 @@
                 <div class="animation start-sighting"></div>
             </nav>
 
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <p>Hello : ${pageContext.request.userPrincipal.name}
+                    | <a href="<c:url value="/j_spring_security_logout" />" > Logout</a>
+                </p>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <a href="${pageContext.request.contextPath}/displayUserList">User Admin Tools</a>
+                </sec:authorize>
+            </c:if>
             <!-- 
            Add a row to container - this will hold the summary table and the new
            hero form.
@@ -59,14 +68,18 @@
                                     <c:out value="${newParsedDate}"/>
                                 </td>
                                 <td>
-                                    <a href="displayEditSightingForm?sightingId=${currentSighting.sightingId}">
-                                        Edit
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_MOD')">
+                                        <a href="displayEditSightingForm?sightingId=${currentSighting.sightingId}">
+                                            Edit
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                                 <td>
-                                    <a href="deleteSighting?sightingId=${currentSighting.sightingId}">
-                                        Delete
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                        <a href="deleteSighting?sightingId=${currentSighting.sightingId}">
+                                            Delete
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -77,60 +90,61 @@
                 half of the row
                 -->
                 <div class="col-md-6">
-                    <h2>Add New Sighting</h2>
-                    <span>
-                        <form class="form-horizontal" 
-                              role="form" method="POST" 
-                              action="createSighting">
-                            <div class="form-group">
-                                <label for="add-location" class="col-md-4 control-label" style="color:white;">Location:</label>
-                                <div class="col-md-8">
-                                    <div class="select">
-                                        <!-- Location's drop down flooding -->
-                                        <select name="locationSelect">
-                                            <option value="" selected disabled hidden>Choose here</option>
-                                            <c:forEach var="currentLocation" items="${locationList}">
-                                                <option value="<c:out value="${currentLocation.locationId}"/>">
-                                                    <c:out value="${currentLocation.locationName}"/>
-                                                </option>
-                                            </c:forEach>
-                                        </select>
+                    <sec:authorize access="hasRole('ROLE_MOD')">
+                        <h2>Add New Sighting</h2>
+                        <span>
+                            <form class="form-horizontal" 
+                                  role="form" method="POST" 
+                                  action="createSighting">
+                                <div class="form-group">
+                                    <label for="add-location" class="col-md-4 control-label" style="color:white;">Location:</label>
+                                    <div class="col-md-8">
+                                        <div class="select">
+                                            <!-- Location's drop down flooding -->
+                                            <select name="locationSelect">
+                                                <option value="" selected disabled hidden>Choose here</option>
+                                                <c:forEach var="currentLocation" items="${locationList}">
+                                                    <option value="<c:out value="${currentLocation.locationId}"/>">
+                                                        <c:out value="${currentLocation.locationName}"/>
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
 
-                            <div class="form-group">
-                                <label for="add-date" class="col-md-4 control-label" style="color:white;">Date:</label>
-                                <div class="col-md-8">
-                                    <input type="date" class="form-control" name="sightingDate" placeholder="Date" required/>
-                                </div>
-                            </div>
-
-                            <div class="form-group">
-                                <label for="add-hero" class="col-md-4 control-label" style="color:white;">Hero:</label>
-                                <div class="col-md-8">
-                                    <div class="select">
-                                        <!-- Heroes drop down flooding -->
-                                        <select name="heroSelect" id="dropbox">
-                                            <option value="" selected disabled hidden>Choose here</option>
-                                            <c:forEach var="currentHero" items="${heroList}">
-                                                <option value="<c:out value="${currentHero.heroId}"/>">
-                                                    <c:out value="${currentHero.heroName}"/>
-                                                </option>
-                                            </c:forEach>
-                                        </select>
+                                <div class="form-group">
+                                    <label for="add-date" class="col-md-4 control-label" style="color:white;">Date:</label>
+                                    <div class="col-md-8">
+                                        <input type="date" class="form-control" name="sightingDate" placeholder="Date" required/>
                                     </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-offset-4 col-md-8">
-                                    <input type="submit" class="btn btn-default" value="Create Sighting"/>
-                                </div>
-                            </div>
-                        </form>
-                    </span>
-                </div> <!-- End col div -->
 
+                                <div class="form-group">
+                                    <label for="add-hero" class="col-md-4 control-label" style="color:white;">Hero:</label>
+                                    <div class="col-md-8">
+                                        <div class="select">
+                                            <!-- Heroes drop down flooding -->
+                                            <select name="heroSelect" id="dropbox">
+                                                <option value="" selected disabled hidden>Choose here</option>
+                                                <c:forEach var="currentHero" items="${heroList}">
+                                                    <option value="<c:out value="${currentHero.heroId}"/>">
+                                                        <c:out value="${currentHero.heroName}"/>
+                                                    </option>
+                                                </c:forEach>
+                                            </select>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-8">
+                                        <input type="submit" class="btn btn-default" value="Create Sighting"/>
+                                    </div>
+                                </div>
+                            </form>
+                        </span>
+                    </div> <!-- End col div -->
+                </sec:authorize>
             </div> <!-- End row div -->  
         </div>
         <!-- Placed at the end of the document so the pages load faster -->

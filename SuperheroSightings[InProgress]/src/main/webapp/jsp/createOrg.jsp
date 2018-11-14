@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +13,7 @@
         <title>Organizations</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">
-        <link href="${pageContext.request.contextPath}/css/styles.css?v=5" type="text/css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/styles.css?v=6" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -29,6 +30,14 @@
                 <div class="animation start-org"></div>
             </nav>
 
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <p>Hello : ${pageContext.request.userPrincipal.name}
+                    | <a href="<c:url value="/j_spring_security_logout" />" > Logout</a>
+                </p>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <a href="${pageContext.request.contextPath}/displayUserList">User Admin Tools</a>
+                </sec:authorize>
+            </c:if>
             <!-- 
                Add a row to container - this will hold the summary table and the new
                hero form.
@@ -53,14 +62,18 @@
                                     </a>
                                 </td>
                                 <td>
-                                    <a href="displayEditOrgForm?orgId=${currentOrg.orgId}">
-                                        Edit
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_MOD')">
+                                        <a href="displayEditOrgForm?orgId=${currentOrg.orgId}">
+                                            Edit
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                                 <td>
-                                    <a href="deleteOrganization?orgId=${currentOrg.orgId}">
-                                        Delete
-                                    </a>
+                                    <sec:authorize access="hasRole('ROLE_ADMIN')">
+                                        <a href="deleteOrganization?orgId=${currentOrg.orgId}">
+                                            Delete
+                                        </a>
+                                    </sec:authorize>
                                 </td>
                             </tr>
                         </c:forEach>
@@ -71,51 +84,52 @@
                 half of the row
                 -->
                 <div class="col-md-6">
-                    <h2>Add New Organization</h2>
-                    <span>
-                        <form class="form-horizontal" 
-                              role="form" method="POST" 
-                              action="createOrganization">
-                            <div class="form-group">
-                                <label for="add-name" class="col-md-4 control-label" style="color:white;">Name:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="orgName" placeholder="Name" required/>
+                    <sec:authorize access="hasRole('ROLE_MOD')">
+                        <h2>Add New Organization</h2>
+                        <span>
+                            <form class="form-horizontal" 
+                                  role="form" method="POST" 
+                                  action="createOrganization">
+                                <div class="form-group">
+                                    <label for="add-name" class="col-md-4 control-label" style="color:white;">Name:</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="orgName" placeholder="Name" required/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="add-description" class="col-md-4 control-label" style="color:white;">Description:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="orgDescr" placeholder="Description" required/>
+                                <div class="form-group">
+                                    <label for="add-description" class="col-md-4 control-label" style="color:white;">Description:</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="orgDescr" placeholder="Description" required/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="add-address" class="col-md-4 control-label" style="color:white;">Address:</label>
-                                <div class="col-md-8">
-                                    <input type="text" class="form-control" name="orgAddress" placeholder="Address" required/>
+                                <div class="form-group">
+                                    <label for="add-address" class="col-md-4 control-label" style="color:white;">Address:</label>
+                                    <div class="col-md-8">
+                                        <input type="text" class="form-control" name="orgAddress" placeholder="Address" required/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="add-phone" class="col-md-4 control-label" style="color:white;">Phone #:</label>
-                                <div class="col-md-8">
-                                    <input type="tel" class="form-control" name="orgPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Phone [123-555-1234]"
-                                           required />
+                                <div class="form-group">
+                                    <label for="add-phone" class="col-md-4 control-label" style="color:white;">Phone #:</label>
+                                    <div class="col-md-8">
+                                        <input type="tel" class="form-control" name="orgPhone" pattern="[0-9]{3}-[0-9]{3}-[0-9]{4}" placeholder="Phone [123-555-1234]"
+                                               required />
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <label for="add-email" class="col-md-4 control-label" style="color:white;">Email:</label>
-                                <div class="col-md-8">
-                                    <input type="email" class="form-control" name="orgEmail" placeholder="Email" required/>
+                                <div class="form-group">
+                                    <label for="add-email" class="col-md-4 control-label" style="color:white;">Email:</label>
+                                    <div class="col-md-8">
+                                        <input type="email" class="form-control" name="orgEmail" placeholder="Email" required/>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="form-group">
-                                <div class="col-md-offset-4 col-md-8">
-                                    <input type="submit" class="btn btn-default" value="Create Organization"/>
+                                <div class="form-group">
+                                    <div class="col-md-offset-4 col-md-8">
+                                        <input type="submit" class="btn btn-default" value="Create Organization"/>
+                                    </div>
                                 </div>
-                            </div>
-                        </form>
-                    </span>
-                </div> <!-- End col div -->
-
+                            </form>
+                        </span>
+                    </div> <!-- End col div -->
+                </sec:authorize>
             </div> <!-- End row div -->    
         </div>
 

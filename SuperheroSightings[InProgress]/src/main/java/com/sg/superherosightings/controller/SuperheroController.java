@@ -10,7 +10,6 @@ import com.sg.superherosightings.dto.Location;
 import com.sg.superherosightings.dto.Organization;
 import com.sg.superherosightings.dto.Sighting;
 import com.sg.superherosightings.service.SuperheroServiceLayer;
-import com.sg.superherosightings.ui.SuperheroView;
 import java.time.LocalDate;
 import java.util.List;
 import javax.inject.Inject;
@@ -42,7 +41,7 @@ public class SuperheroController {
     // ===================================
     // HOME PAGE
     // ===================================
-    @RequestMapping(value = "/displayHomePage", method = RequestMethod.GET)
+    @RequestMapping(value = {"/", "/displayHomePage"}, method = RequestMethod.GET)
     public String displayHomePage(Model model) {
         // Get all the Sightings from the DAO
         List<Sighting> sightingList = service.getAllSightingsToLimit();
@@ -53,7 +52,7 @@ public class SuperheroController {
 
         // Put the List of Sightings on the Model
         model.addAttribute("sightingList", sightingList);
-         // Put the List of Locations on the Model
+        // Put the List of Locations on the Model
         model.addAttribute("locationList", locationList);
         // Put the List of Heroes on the Model
         model.addAttribute("heroList", heroList);
@@ -69,13 +68,13 @@ public class SuperheroController {
     public String displayHeroesPage(Model model) {
         // Get all the Heroes from the DAO
         List<Heroes> heroList = service.getAllHeroes();
-        
+
         // Get all the Organizations from the DAO
         List<Organization> orgList = service.getAllOrg();
 
         // Put the List of Heroes on the Model
         model.addAttribute("heroList", heroList);
-        
+
         // Put the List of Orgs on the Model
         model.addAttribute("orgList", orgList);
 
@@ -87,19 +86,20 @@ public class SuperheroController {
     public String createHero(HttpServletRequest request) {
         String orgIdParameter = request.getParameter("heroesOrgSelect");
         long orgId = Integer.parseInt(orgIdParameter);
-        long heroId=0;
-        
+        long heroId = 0;
+
         // grab the incoming values from the form and create a new Hero
         // object
         Heroes hero = new Heroes();
         hero.setHeroName(request.getParameter("heroName"));
         hero.setHeroDescr(request.getParameter("heroDescr"));
         hero.setHeroPower(request.getParameter("heroPower"));
-
+        
         // persist the new Hero
         service.addHero(hero);
         // get heroId for HeroOrg bridge table
         heroId = hero.getHeroId();
+ 
         service.addHeroOrg(orgId, heroId);
 
         return "redirect:displayHeroesPage";
@@ -112,7 +112,7 @@ public class SuperheroController {
 
         Heroes hero = service.getHeroById(heroId);
         List<Organization> org = service.getOrgByHeroId(heroId);
-        
+
         model.addAttribute("hero", hero);
         model.addAttribute("org", org);
 
@@ -125,20 +125,21 @@ public class SuperheroController {
         long heroId = Long.parseLong(heroIdParameter);
         service.removeHero(heroId);
         service.deleteHeroOrgsByHeroID(heroId);
-        
+
         return "redirect:displayHeroesPage";
     }
-    
+
     @RequestMapping(value = "/deleteHeroOrgAssoc", method = RequestMethod.GET)
     public String deleteHeroOrgAssoc(HttpServletRequest request) {
-        String heroIdParameter = request.getParameter("heroId");
-        long heroId = Long.parseLong(heroIdParameter);
         String orgIdParameter = request.getParameter("orgId");
         long orgId = Long.parseLong(orgIdParameter);
-        
+        String heroIdParameter = request.getParameter("heroId");
+        long heroId = Long.parseLong(heroIdParameter);
+
         service.removeHeroOrg(orgId, heroId);
-        
-        return "displayEditHeroForm";
+
+        // allow page to return to the correct heroId we are editing 
+        return "redirect:displayEditHeroForm?heroId=" + heroId;
     }
 
     @RequestMapping(value = "/displayEditHeroForm", method = RequestMethod.GET)
@@ -147,24 +148,31 @@ public class SuperheroController {
         long heroId = Long.parseLong(heroIdParameter);
         List<Organization> org = service.getOrgByHeroId(heroId);
         List<Organization> orgList = service.getAllOrg();
-        
+
         Heroes hero = service.getHeroById(heroId);
-        
+
         model.addAttribute("hero", hero);
         model.addAttribute("org", org);
-         model.addAttribute("orgList", orgList);
-        
+        model.addAttribute("orgList", orgList);
+
         return "editHero";
     }
 
     @RequestMapping(value = "/editHero", method = RequestMethod.POST)
-    public String editHero(@Valid @ModelAttribute("hero") Heroes hero, BindingResult result) {
+    public String editHero(@Valid @ModelAttribute("hero") Heroes hero, BindingResult result, HttpServletRequest request) {
+        String orgIdParameter = request.getParameter("heroesOrgSelectEdit");
 
         if (result.hasErrors()) {
             return "editHero";
         }
 
-        service.updateHero(hero);
+        // if nothing is selected for an org, dont update anything related to org/hero relationship - else...
+        if (orgIdParameter == null) {
+            service.updateHero(hero);
+        } else {
+            long orgId = Integer.parseInt(orgIdParameter);
+            service.updateHeroWithOrg(hero, orgId);
+        }
 
         return "redirect:displayHeroesPage";
     }
@@ -223,23 +231,49 @@ public class SuperheroController {
         return "redirect:displayOrganizationPage";
     }
 
+    @RequestMapping(value = "/deleteHeroFromOrg", method = RequestMethod.GET)
+    public String deleteHeroFromOrg(HttpServletRequest request) {
+        String orgIdParameter = request.getParameter("orgId");
+        long orgId = Long.parseLong(orgIdParameter);
+        String heroIdParameter = request.getParameter("heroId");
+        long heroId = Long.parseLong(heroIdParameter);
+
+        service.removeHeroOrg(orgId, heroId);
+
+        // allow page to return to the correct orgId we are editing 
+        return "redirect:displayEditOrgForm?orgId=" + orgId;
+    }
+
     @RequestMapping(value = "/displayEditOrgForm", method = RequestMethod.GET)
     public String displayEditOrgForm(HttpServletRequest request, Model model) {
         String orgIdParameter = request.getParameter("orgId");
         long orgId = Long.parseLong(orgIdParameter);
         Organization org = service.getOrgById(orgId);
+        List<Heroes> hero = service.getHeroByOrgId(orgId);
+        List<Heroes> heroList = service.getAllHeroes();
+
         model.addAttribute("org", org);
+        model.addAttribute("hero", hero);
+        model.addAttribute("heroList", heroList);
+
         return "editOrg";
     }
 
     @RequestMapping(value = "/editOrganization", method = RequestMethod.POST)
-    public String editOrganization(@Valid @ModelAttribute("org") Organization org, BindingResult result) {
-
+    public String editOrganization(@Valid @ModelAttribute("org") Organization org, BindingResult result, HttpServletRequest request) {
+        String heroIdParameter = request.getParameter("heroSelect");
+        
         if (result.hasErrors()) {
             return "editOrg";
         }
 
-        service.updateOrg(org);
+        // if nothing is selected for a hero, dont update anything related to hero/org relationship - else...
+        if (heroIdParameter == null) {
+            service.updateOrg(org);
+        } else {
+            long heroId = Long.parseLong(heroIdParameter);
+            service.updateOrgWithHero(org, heroId);
+        }
 
         return "redirect:displayOrganizationPage";
     }
@@ -292,7 +326,7 @@ public class SuperheroController {
     public String deleteLocation(HttpServletRequest request) {
         String locationIdParameter = request.getParameter("locationId");
         long locationId = Long.parseLong(locationIdParameter);
-        service.removeOrg(locationId);
+        service.removeLocation(locationId);
         return "redirect:displayLocationPage";
     }
 
@@ -320,7 +354,6 @@ public class SuperheroController {
     // ===================================
     // SIGHTINGS
     // ===================================
-    
     @RequestMapping(value = "/displaySightingPage", method = RequestMethod.GET)
     public String displaySightingPage(Model model) {
         // Get all the Sightings from the DAO
@@ -344,9 +377,9 @@ public class SuperheroController {
     @RequestMapping(value = "/createSighting", method = RequestMethod.POST)
     public String createSighting(HttpServletRequest request) {
         String locationIdParameter = request.getParameter("locationSelect");
-        long locationId = Long.parseLong(locationIdParameter);
+        int locationId = Integer.parseInt(locationIdParameter);
         String heroIdParameter = request.getParameter("heroSelect");
-        long heroId = Long.parseLong(heroIdParameter);
+        int heroId = Integer.parseInt(heroIdParameter);
         String sightingDateParameter = request.getParameter("sightingDate");
         LocalDate sightingDate = LocalDate.parse(sightingDateParameter);
 
@@ -374,7 +407,7 @@ public class SuperheroController {
 
         String sightingDateParameter = request.getParameter("sightingDate");
         LocalDate sightingDate = sighting.getSightingDate();
-        
+
         model.addAttribute("sighting", sighting);
         model.addAttribute("sightingDate", sightingDate);
         model.addAttribute("location", location);
@@ -395,10 +428,10 @@ public class SuperheroController {
     public String displayEditSightingForm(HttpServletRequest request, Model model) {
         String sightingIdParameter = request.getParameter("sightingId");
         long sightingId = Long.parseLong(sightingIdParameter);
-        
+
         List<Location> locationList = service.getAllLocation();
         List<Heroes> heroList = service.getAllHeroes();
-        
+
         Sighting sighting = service.getSightingByID(sightingId);
         Location location = service.getLocationBySightingId(sightingId);
         Heroes hero = service.getHeroBySightingId(sightingId);
@@ -406,7 +439,7 @@ public class SuperheroController {
         model.addAttribute("sighting", sighting);
         model.addAttribute("location", location);
         model.addAttribute("hero", hero);
-        
+
         model.addAttribute("locationList", locationList);
         model.addAttribute("heroList", heroList);
 
@@ -414,12 +447,21 @@ public class SuperheroController {
     }
 
     @RequestMapping(value = "/editSighting", method = RequestMethod.POST)
-    public String editSighting(@Valid @ModelAttribute("sighting") Sighting sighting, BindingResult result) {
-
+    public String editSighting(@Valid @ModelAttribute("sighting") Sighting sighting, BindingResult result, HttpServletRequest request) {
+        String heroIdParameter = request.getParameter("heroSelect");
+        String locationIdParameter = request.getParameter("locationSelect");
+        
         if (result.hasErrors()) {
             return "editSighting";
         }
 
+        // if nothing is selected for a hero, dont update anything related to hero/org relationship - else...
+       /* if (heroIdParameter == null && locationIdParameter == null) {
+            service.updateSighting(sighting);
+        } else if (heroIdParameter == null) {
+            long heroId = Long.parseLong(heroIdParameter);
+            service.updateOrgWithHero(org, heroId);
+        }*/
         service.updateSighting(sighting);
 
         return "redirect:displaySightingPage";

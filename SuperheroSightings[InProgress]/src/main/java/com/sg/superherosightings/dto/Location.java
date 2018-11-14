@@ -27,10 +27,10 @@ public class Location {
     @Length(max = 50, message = "Location Address must be no more than 50 characters in length.")
     private String locationAddress;
     @NotEmpty(message = "You must supply a value for the the Location Latitude.")
-    @Length(max = 50, message = "Location Latitude must be no more than 50 characters in length.")
+    @Length(max = 20, message = "Location Latitude must be no more than 20 characters in length.")
     private String locationLat;
     @NotEmpty(message = "You must supply a value for the the Location Longitude.")
-    @Length(max = 50, message = "Location Longitude must be no more than 50 characters in length.")
+    @Length(max = 20, message = "Location Longitude must be no more than 20 characters in length.")
     private String locationLong;
 
     public long getLocationId() {

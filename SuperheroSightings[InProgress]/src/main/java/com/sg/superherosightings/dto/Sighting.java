@@ -16,9 +16,9 @@ import org.hibernate.validator.constraints.NotEmpty;
 public class Sighting {
     private int sightingId;
     @NotEmpty(message = "You must supply a value for the Hero Sighted.")
-    private long heroId;
+    private int heroId;
     @NotEmpty(message = "You must supply a value for the Location of sighting.")
-    private long locationId;
+    private int locationId;
     @NotEmpty(message = "You must supply a value for the Sighting Date.")
     private LocalDate sightingDate;
     
@@ -28,16 +28,16 @@ public class Sighting {
     public void setSightingId(int sightingId) {
         this.sightingId = sightingId;
     }
-    public long getHeroId() {
+    public int getHeroId() {
         return heroId;
     }
-    public void setHeroId(long heroId) {
+    public void setHeroId(int heroId) {
         this.heroId = heroId;
     }
-    public long getLocationId() {
+    public int getLocationId() {
         return locationId;
     }
-    public void setLocationId(long locationId) {
+    public void setLocationId(int locationId) {
         this.locationId = locationId;
     }
     public LocalDate getSightingDate() {

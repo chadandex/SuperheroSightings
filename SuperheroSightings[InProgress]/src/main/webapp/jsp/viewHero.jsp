@@ -4,6 +4,7 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags"%>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt"%>
+<%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
 <%@page contentType="text/html" pageEncoding="UTF-8"%>
 <!DOCTYPE html>
 <html>
@@ -12,7 +13,7 @@
         <title>Viewing Superhero</title>
         <!-- Bootstrap core CSS -->
         <link href="${pageContext.request.contextPath}/css/bootstrap.min.css" rel="stylesheet">    
-        <link href="${pageContext.request.contextPath}/css/styles.css?v=1" type="text/css" rel="stylesheet">
+        <link href="${pageContext.request.contextPath}/css/styles.css?v=6" type="text/css" rel="stylesheet">
     </head>
     <body>
         <div class="container">
@@ -29,28 +30,36 @@
                 <div class="animation start-hero"></div>
             </nav>
 
-            <p style="color:white;">
+            <c:if test="${pageContext.request.userPrincipal.name != null}">
+                <p>Hello : ${pageContext.request.userPrincipal.name}
+                    | <a href="<c:url value="/j_spring_security_logout" />" > Logout</a>
+                </p>
+                <sec:authorize access="hasRole('ROLE_ADMIN')">
+                    <a href="${pageContext.request.contextPath}/displayUserList">User Admin Tools</a>
+                </sec:authorize>
+            </c:if>
+
+            <p>
                 <b>Superhero Name:</b> <c:out value="${hero.heroName}"/>
             </p>
-            <p style="color:white;">
+            <p>
                 <b>Superhero Description:</b> <c:out value="${hero.heroDescr}"/>
             </p>
-            <p style="color:white;">
+            <p>
                 <b>Superhero Power:</b> <c:out value="${hero.heroPower}"/>
             </p>
-            <p style="color:white;">
-                <b>Superhero Organization(s): </b> 
+            <p>
+                <b>Superhero Organization(s): </b>
                 <c:forEach var="currentOrg" items="${org}">
-                    <c:out value="${currentOrg.orgName}"/>
-                    <b>,</b>
+                    <c:out value="${currentOrg.orgName}, "/>
                 </c:forEach>
             </p>
+            <input type="button" class="btn btn-default" name="cancel" onclick="history.back()" value="Back"/>
+    </div>
 
-        </div>
 
-
-        <!-- Placed at the end of the document so the pages load faster -->
-        <script src="${pageContext.request.contextPath}/js/jquery-3.1.1.min.js"></script>
-        <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
-    </body>
+    <!-- Placed at the end of the document so the pages load faster -->
+    <script src="${pageContext.request.contextPath}/js/jquery-3.1.1.min.js"></script>
+    <script src="${pageContext.request.contextPath}/js/bootstrap.min.js"></script>
+</body>
 </html>
