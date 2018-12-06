@@ -1,2 +1,2 @@
 # SuperheroSightings
- [In Progress] Capstone Java website with use of a database, MySQL, and using Spring MVC with Spring Security.
+Capstone Java website with use of a database, MySQL, and using Spring MVC with Spring Security.
